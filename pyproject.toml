@@ -21,10 +21,10 @@ classifiers=[
     'Topic :: Software Development :: Build Tools',
     'Topic :: Utilities',
 ]
-packages = [{include='amadlacli', from='.'}]
+packages = [{include='dryrun', from='.'}]
 
 [tool.poetry.scripts]
-amadlacli = 'amadlacli.cli:main'
+dryrun = 'dryrun.dryrun:cli'
 
 [tool.poetry.dependencies]
 python = "^3.11.0"
@@ -61,7 +61,7 @@ build-backend = "poetry.core.masonry.api"
 [project.urls]
 source="https://github.com/AmadlaOrg/dryrun"
 GitHub= "https://github.com/AmadlaOrg"
-documentation = "https://amadla.org/en/amadla-cli/docs/latest"
+documentation = "https://amadla.org/projects/dryrun/docs/en/latest"
 saythanks = "https://saythanks.io/to/amadla.org"
 changelog = "https://github.com/AmadlaOrg/dryrun/blob/CHANGELOG.rst"
 

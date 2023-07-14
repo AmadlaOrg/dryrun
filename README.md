@@ -30,14 +30,15 @@ This tool is particularly useful for scenarios where you need to test changes th
 > This directory makes it possible manually edit the configuration files and revert to them.
 
 ## :construction_worker: Installation
-
+To be able to use `dryrun`, you need to have Python 3.11 or higher installed on your system.
 ```bash
 pip install dryrun
 ```
 
-> Requires Python 3.11 or higher.
-
-> It also uses poetry.
+[poetry](https://python-poetry.org/) can also be used to install `dryrun`.
+```bash
+poetry add dryrun
+```
 
 ## :shipit: Usage
 
