@@ -1,0 +1,19 @@
+# Unix LF endings
+*.js        eol=lf
+*.coffee    eol=lf
+*.css       eol=lf
+*.less      eol=lf
+*.scss      eol=lf
+Dockefile   eol=lf
+*.md        eol=lf
+*.mk        eol=lf
+Makefile    eol=lf
+*.yml       eol=lf
+*.cfg       eol=lf
+*.j2        eol=lf
+*.service   eol=lf
+*.hcl       eol=lf
+*.py        eol=lf
+
+# Windows bash scripts are also Unix LF endings
+*.sh	    eol=lf
