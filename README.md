@@ -1,6 +1,6 @@
 <a href="https://amadla.org/projects/dryrun/" align="right"><img src="./assets/An_alchemist_in_his_laboratory._Oil_painting_by_a_follower_o_Wellcome_V0017658-450x.webp" alt="dryrun logo" style="width: 450px;" align="right"></a>
 
-# dryrun
+# dryrun :running:
 
 [![Language: English](https://img.shields.io/badge/Language-English-blue.svg)](./README.md)
 [![Language: Français](https://img.shields.io/badge/Langue-Fran%C3%A7ais-blue.svg)](./README.fr.md)
@@ -13,7 +13,7 @@ This tool is particularly useful for scenarios where you need to test changes th
 
 > Ok Ok!! It is not exactly a dry run, but it is close enough! Unless something catastrophic happens (no more network connect plus cron job breaks), you will be able to revert to the old configurations.
 
-## Features
+## :muscle: Features
 
 * Backup existing configurations
 * Apply new configurations
@@ -29,7 +29,7 @@ This tool is particularly useful for scenarios where you need to test changes th
 > This directory is created automatically if it does not exist.
 > This directory makes it possible manually edit the configuration files and revert to them.
 
-## Installation
+## :construction_worker: Installation
 
 ```bash
 pip install dryrun
@@ -39,7 +39,7 @@ pip install dryrun
 
 > It also uses poetry.
 
-## Usage
+## :shipit: Usage
 
 ### Setup a New Test
 The `setup` command creates a new testing scenario. It backs up the files from the provided path into an 'old' directory and prepares a 'new' directory for new configurations.
@@ -67,14 +67,14 @@ The `remove` command removes a testing scenario completely, including its backup
 dryrun remove --name test-bob
 ```
 
-## Options
+## :round_pushpin: Options
 * `--name, -n` - The name of the dryrun (only alphanumeric, dashes and underscores are allowed).
 * `--path, -p` - The path of the files that will be backed up and replaced for testing.
 * `--time, -t` - The duration the new files need to be there before replacing them back with the old ones. Default is '5min'.
 * `--reboot, -r` - Choose whether to reboot after a revert. Default is false.
 * `--strict, -s` - If true, run tests on the files before applying new configuration. Default is true.
 
-## File Structure
+## :open_file_folder: File Structure
 Dryrun creates a directory in the home directory named .dryrun. Inside this directory, it creates a folder for each testing scenario with the name given in the --name option.
 
 Inside each testing scenario directory, it creates two more directories: old and new. The old directory contains a backup of the original configuration files, and the new directory is meant for the new configuration files.
