@@ -1,3 +1,5 @@
+<a href="https://amadla.org/projects/dryrun/" align="right"><img src="./assets/An_alchemist_in_his_laboratory._Oil_painting_by_a_follower_o_Wellcome_V0017658-450x.webp" alt="dryrun logo" style="width: 450px;" align="right"></a>
+
 # dryrun
 
 [![Language: English](https://img.shields.io/badge/Language-English-blue.svg)](./README.md)
@@ -8,6 +10,8 @@
 Dryrun is a Python-based command-line tool designed to automate the process of testing changes to configuration files. It allows you to backup existing configurations, apply new configurations, and revert to the old configurations automatically after a specified duration or upon command.
 
 This tool is particularly useful for scenarios where you need to test changes that may cause a loss of connectivity or have other significant effects, as it allows you to revert to a previous state automatically.
+
+> Ok Ok!! It is not exactly a dry run, but it is close enough! Unless something catastrophic happens (no more network connect plus cron job breaks), you will be able to revert to the old configurations.
 
 ## Features
 
@@ -37,21 +41,30 @@ pip install dryrun
 
 ## Usage
 
+### Setup a New Test
+The `setup` command creates a new testing scenario. It backs up the files from the provided path into an 'old' directory and prepares a 'new' directory for new configurations.
 ```bash
-./dryrun.py setup --name test-bob --path /etc/bob
-# Make your changes to the configuration files in the `~/.dryrun/test-bob/new` directory
-./dryrun.py start --name test-bob
-# If anything goes wrong it will revert back.
-# If you want to revert manually:
-./dryrun.py revert --name test-bob
-# If you want to remove the testing scenario:
-./dryrun.py remove --name test-bob
+dryrun setup --name test-bob --path /etc/bob
+```
+
+> Make your changes to the configuration files in the `~/.dryrun/test-bob/new` directory.
+
+### Running a test
+The `run` command starts a previously set up testing scenario. It applies the new configuration and schedules a revert to the old configuration after the specified time.
+```bash
+dryrun run --name test-bob
 ```
 
 ### Stopping a test
-
+The `stop` command stops a running test and reverts to the old configuration immediately.
 ```bash
-./dryrun.py stop --name test-bob
+dryrun stop --name test-bob
+```
+
+### Remove a test
+The `remove` command removes a testing scenario completely, including its backup files.
+```bash
+dryrun remove --name test-bob
 ```
 
 ## Options
