@@ -1,3 +1,5 @@
+import os
+import shutil
 import click
 
 
@@ -17,7 +19,23 @@ def cli():
 @click.option('--strict', '-s', is_flag=True, default=True, help='Run tests on the files.')
 def setup(name, path, time, reboot, strict):
     # Insert your setup logic here
-    click.echo("Setup")
+    # Find the path to the home directory
+    home_dir = os.path.expanduser("~")
+    dryrun_dir = os.path.join(home_dir, '.dryrun', name)
+
+    # Create .dryrun directory if it does not exist
+    os.makedirs(dryrun_dir, exist_ok=True)
+
+    # Create 'new' and 'old' directories inside
+    old_dir = os.path.join(dryrun_dir, 'old')
+    new_dir = os.path.join(dryrun_dir, 'new')
+    os.makedirs(old_dir, exist_ok=True)
+    os.makedirs(new_dir, exist_ok=True)
+
+    # Copy everything from the specified path to the 'old' directory
+    shutil.copytree(path, os.path.join(old_dir, path.lstrip('/')), dirs_exist_ok=True)
+
+    click.echo(f"Setup completed for dryrun '{name}'.")
 
 
 @cli.command()
