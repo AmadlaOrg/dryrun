@@ -83,6 +83,8 @@ Inside each testing scenario directory, it creates two more directories: old and
 
 The license for the code and documentation can be found in the [LICENSE](./LICENSE) file.
 
+Side image: [WikiMedia: An alchemist in his laboratory. Oil painting by a follower of David Teniers the younger. Iconographic Collections Keywords: David Teniers](https://commons.wikimedia.org/wiki/File:An_alchemist_in_his_laboratory._Oil_painting_by_a_follower_o_Wellcome_V0017658.jpg#/media/File:An_alchemist_in_his_laboratory._Oil_painting_by_a_follower_o_Wellcome_V0017658.jpg)
+
 ---
 
 Made in Québec :fleur_de_lis:, Canada 🇨🇦!
