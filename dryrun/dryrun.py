@@ -1,6 +1,8 @@
 import os
 import shutil
 import re
+from pathlib import Path
+
 import click
 
 
@@ -35,7 +37,7 @@ def cli():
               help='How long the files need to be there before replacing them back with the original ones.')
 @click.option('--reboot', '-r', is_flag=True, default=False, help='Reboot after a revert.')
 @click.option('--strict', '-s', is_flag=True, default=True, help='Run tests on the files.')
-def setup(name: str, path, time, reboot, strict):
+def setup(name: str, path, time, reboot, strict) -> None:
     """
     Sets up the dry run.
     :param name:
@@ -101,19 +103,29 @@ def run(name, time, reboot, strict) -> None:
     :return:
     """
     # Insert your run logic here
-    click.echo("Run")
+
 
 
 @cli.command()
 @click.option('--name', '-n', type=str, callback=validate_name, help='Name of the dryrun.')
-def stop(name):
+def stop(name) -> None:
+    """
+    Stops the dry run.
+    :param name:
+    :return:
+    """
     # Insert your stop logic here
     click.echo("Stop")
 
 
 @cli.command()
 @click.option('--name', '-n', type=str, callback=validate_name, help='Name of the dryrun.')
-def remove(name):
+def remove(name) -> None:
+    """
+    Removes the dry run.
+    :param name:
+    :return:
+    """
     # Insert your remove logic here
     click.echo("Remove")
 
