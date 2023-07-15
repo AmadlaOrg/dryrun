@@ -55,6 +55,22 @@ class TestDryRun(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(dryrun_dir, 'new')))
 
     @patch('os.path.expanduser')
+    def test_config_toml_created(self, mock_expanduser):
+        mock_expanduser.return_value = self.temp_dir.name
+        test_dirs = str(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fixtures'))
+        self.runner.invoke(cli, ['setup', '--name', 'test', '--path', test_dirs, '--time', '1', '--reboot', '--strict'])
+        dryrun_dir = os.path.join(self.temp_dir.name, '.dryrun', 'test')
+        config_toml = os.path.join(dryrun_dir, 'config.toml')
+        self.assertTrue(os.path.exists(config_toml))
+        with open(config_toml, 'r') as f:
+            content = f.read()
+        self.assertIn('name = "test"', content)
+        self.assertIn(f'paths = [\'{test_dirs}\']', content)
+        self.assertIn('time = "1"', content)
+        self.assertIn('reboot = true', content)
+        self.assertIn('strict = true', content)
+
+    @patch('os.path.expanduser')
     def test_invalid_name_raises_error(self, mock_expanduser):
         mock_expanduser.return_value = self.temp_dir.name
         test_dirs = str(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fixtures'))

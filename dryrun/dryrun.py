@@ -36,7 +36,7 @@ def cli():
               default=5,
               help='How long the files need to be there before replacing them back with the original ones.')
 @click.option('--reboot', '-r', is_flag=True, default=False, help='Reboot after a revert.')
-@click.option('--strict', '-s', is_flag=True, default=True, help='Run tests on the files.')
+@click.option('--strict', '-s', is_flag=True, default=False, help='Run tests on the files.')
 def setup(name: str, path, time, reboot, strict) -> None:
     """
     Sets up the dry run.
@@ -92,7 +92,7 @@ def setup(name: str, path, time, reboot, strict) -> None:
               default=5,
               help='How long the files need to be there before replacing them back with the original ones.')
 @click.option('--reboot', '-r', is_flag=True, default=False, help='Reboot after a revert.')
-@click.option('--strict', '-s', is_flag=True, default=True, help='Run tests on the files.')
+@click.option('--strict', '-s', is_flag=True, default=False, help='Run tests on the files.')
 def run(name, time, reboot, strict) -> None:
     """
     Runs the dry run.
