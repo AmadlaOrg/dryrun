@@ -62,7 +62,8 @@ def setup(name: str, path, time, reboot, strict) -> None:
 
     # Copy everything from each specified path to the 'old' directory
     for p in path:
-        shutil.copytree(p, os.path.join(old_dir, p.lstrip('/')), dirs_exist_ok=True)
+        #shutil.copytree(p, os.path.join(old_dir, p.lstrip('/')), dirs_exist_ok=True)
+        shutil.copytree(p, os.path.join(old_dir, os.path.basename(p)), dirs_exist_ok=True)
 
     # Write parameters to a TOML file
     config = f"""
