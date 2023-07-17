@@ -1,6 +1,8 @@
 import os
 import shutil
 import re
+import textwrap
+import tomllib
 from pathlib import Path
 
 import click
@@ -62,8 +64,9 @@ def setup(name: str, path, time, reboot, strict) -> None:
 
     # Copy everything from each specified path to the 'old' directory
     for p in path:
-        #shutil.copytree(p, os.path.join(old_dir, p.lstrip('/')), dirs_exist_ok=True)
-        shutil.copytree(p, os.path.join(old_dir, os.path.basename(p)), dirs_exist_ok=True)
+        shutil.copytree(p, os.path.join(new_dir, p.lstrip('/')), dirs_exist_ok=True)
+        shutil.copytree(p, os.path.join(old_dir, p.lstrip('/')), dirs_exist_ok=True)
+        #shutil.copytree(p, os.path.join(old_dir, os.path.basename(p)), dirs_exist_ok=True)
 
     # Write parameters to a TOML file
     config = f"""
@@ -73,6 +76,7 @@ def setup(name: str, path, time, reboot, strict) -> None:
     reboot = {str(reboot).lower()}
     strict = {str(strict).lower()}
     """
+    config = textwrap.dedent(config).strip()
     try:
         with open(os.path.join(dryrun_dir, 'config.toml'), 'w') as f:
             f.write(config)
@@ -84,6 +88,10 @@ def setup(name: str, path, time, reboot, strict) -> None:
         return
 
     click.echo(f"Setup completed for dryrun '{name}'.")
+
+
+class CronTab:
+    pass
 
 
 @cli.command()
@@ -103,8 +111,42 @@ def run(name, time, reboot, strict) -> None:
     :param strict:
     :return:
     """
-    # Insert your run logic here
+    home_dir = os.path.expanduser("~")
+    dryrun_dir = os.path.join(home_dir, '.dryrun', name)
+    config_file = os.path.join(dryrun_dir, 'config.toml')
 
+    if not os.path.isfile(config_file):
+        click.echo(f"Error: Configuration file does not exist for dryrun '{name}'.")
+        return
+
+    # Load config
+    with open(config_file, 'r') as f:
+        config = tomllib.load(f)
+
+    time = time or config.get('time')
+    reboot = reboot or config.get('reboot')
+    strict = strict or config.get('strict')
+
+    new_dir = os.path.join(dryrun_dir, 'new')
+    old_dir = os.path.join(dryrun_dir, 'old')
+
+    paths = config.get('paths', [])
+
+    # Copy new files to original locations
+    for p in paths:
+        dest = p
+        shutil.copytree(os.path.join(new_dir, p.lstrip('/')), dest, dirs_exist_ok=True)
+
+    # Create cron job
+    cron = CronTab(user='root')
+    command = f'python3 {os.path.realpath(__file__)} revert --name {name}'
+    job = cron.new(command=command)
+    job.setall(f'*/{time} * * * *')
+
+    # Write cron job
+    cron.write()
+
+    click.echo(f"Dryrun '{name}' is now running.")
 
 
 @cli.command()
@@ -115,8 +157,44 @@ def stop(name) -> None:
     :param name:
     :return:
     """
-    # Insert your stop logic here
-    click.echo("Stop")
+    # Remove cron job
+    cron = CronTab(user='root')
+    cron.remove_all(comment=name)
+    cron.write()
+
+    click.echo(f"Dryrun '{name}' has been stopped.")
+
+
+@cli.command()
+@click.option('--name', '-n', type=str, callback=validate_name, help='Name of the dryrun.')
+def revert(name) -> None:
+    """
+    Reverts the changes made by the dry run.
+    :param name:
+    :return:
+    """
+    home_dir = os.path.expanduser("~")
+    dryrun_dir = os.path.join(home_dir, '.dryrun', name)
+    config_file = os.path.join(dryrun_dir, 'config.toml')
+
+    if not os.path.isfile(config_file):
+        click.echo(f"Error: Configuration file does not exist for dryrun '{name}'.")
+        return
+
+    # Load config
+    with open(config_file, 'r') as f:
+        config = tomllib.load(f)
+
+    old_dir = os.path.join(dryrun_dir, 'old')
+
+    paths = config.get('paths', [])
+
+    # Replace new files with old ones
+    for p in paths:
+        shutil.rmtree(p)
+        shutil.copytree(os.path.join(old_dir, p.lstrip('/')), p)
+
+    click.echo(f"Dryrun '{name}' has been reverted.")
 
 
 @cli.command()
@@ -127,8 +205,25 @@ def remove(name) -> None:
     :param name:
     :return:
     """
-    # Insert your remove logic here
-    click.echo("Remove")
+    # Find the path to the home directory
+    home_dir = os.path.expanduser("~")
+    dryrun_dir = os.path.join(home_dir, '.dryrun', name)
+
+    # Check if the directory exists
+    if not os.path.isdir(dryrun_dir):
+        click.echo(f"Error: Dryrun '{name}' does not exist.")
+        return
+
+    # Try to remove the directory and handle potential exceptions
+    try:
+        shutil.rmtree(dryrun_dir)
+        click.echo(f"Dryrun '{name}' has been successfully removed.")
+    except FileNotFoundError:
+        click.echo(f"Error: Dryrun '{name}' does not exist.")
+    except PermissionError:
+        click.echo(f"Error: You do not have the necessary permissions to remove dryrun '{name}'.")
+    except OSError as e:
+        click.echo(f"Error: {e}")
 
 
 if __name__ == '__main__':
