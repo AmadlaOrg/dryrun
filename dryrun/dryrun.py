@@ -9,7 +9,7 @@ from pathlib import Path
 import click
 
 
-def validate_name(ctx, param, value):
+def validate_name(ctx, param, value) -> str:
     """
     Validates the name of the dry run.
     :param ctx:
@@ -20,6 +20,31 @@ def validate_name(ctx, param, value):
     if not re.match(r'^[a-zA-Z0-9_-]*$', value):
         raise click.BadParameter('Name should only contain alphanumeric characters, underscores, and hyphens.')
     return value
+
+
+def write_toml(path: Path, name: str, paths: list, time: int, reboot: bool, strict: bool) -> None:
+    """
+    Writes the config.toml file.
+    :return:
+    """
+
+    config = f"""
+    name = "{name}"
+    paths = {list(paths)}
+    time = "{time}"
+    reboot = {str(reboot).lower()}
+    strict = {str(strict).lower()}
+    """
+    config = textwrap.dedent(config).strip()
+    try:
+        with open(os.path.join(path, 'config.toml'), 'w') as f:
+            f.write(config)
+    except FileNotFoundError:
+        click.echo(f"Error: Could not locate the file 'config.toml' in directory '{path}'.")
+        return
+    except PermissionError:
+        click.echo(f"Error: No write permissions to the file 'config.toml' in directory '{path}'.")
+        return
 
 
 @click.group()
@@ -70,23 +95,7 @@ def setup(name: str, path, time, reboot, strict) -> None:
         #shutil.copytree(p, os.path.join(old_dir, os.path.basename(p)), dirs_exist_ok=True)
 
     # Write parameters to a TOML file
-    config = f"""
-    name = "{name}"
-    paths = {list(path)}
-    time = "{time}"
-    reboot = {str(reboot).lower()}
-    strict = {str(strict).lower()}
-    """
-    config = textwrap.dedent(config).strip()
-    try:
-        with open(os.path.join(dryrun_dir, 'config.toml'), 'w') as f:
-            f.write(config)
-    except FileNotFoundError:
-        click.echo(f"Error: Could not locate the file 'config.toml' in directory '{dryrun_dir}'.")
-        return
-    except PermissionError:
-        click.echo(f"Error: No write permissions to the file 'config.toml' in directory '{dryrun_dir}'.")
-        return
+    write_toml(Path(dryrun_dir), name, path, time, reboot, strict)
 
     click.echo(f"Setup completed for dryrun '{name}'.")
 
