@@ -3,6 +3,7 @@ import shutil
 import re
 import textwrap
 import tomllib
+from crontab import CronTab
 from pathlib import Path
 
 import click
@@ -90,10 +91,6 @@ def setup(name: str, path, time, reboot, strict) -> None:
     click.echo(f"Setup completed for dryrun '{name}'.")
 
 
-class CronTab:
-    pass
-
-
 @cli.command()
 @click.option('--name', '-n', type=str, callback=validate_name, help='Name of the dryrun.')
 @click.option('--time',
@@ -120,7 +117,7 @@ def run(name, time, reboot, strict) -> None:
         return
 
     # Load config
-    with open(config_file, 'r') as f:
+    with open(config_file, 'rb') as f:
         config = tomllib.load(f)
 
     time = time or config.get('time')
@@ -139,9 +136,10 @@ def run(name, time, reboot, strict) -> None:
 
     # Create cron job
     cron = CronTab(user='root')
-    command = f'python3 {os.path.realpath(__file__)} revert --name {name}'
+    command = f'python3 {os.path.realpath(__file__)} cli revert --name {name}'
     job = cron.new(command=command)
     job.setall(f'*/{time} * * * *')
+    job.set_comment(name)  # Add this line
 
     # Write cron job
     cron.write()
