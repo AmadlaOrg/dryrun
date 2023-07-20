@@ -138,6 +138,8 @@ def run(name, time, reboot, strict) -> None:
 
     paths = config.get('paths', [])
 
+    write_toml(Path(dryrun_dir), name, paths, time, reboot, strict)
+
     # Copy new files to original locations
     for p in paths:
         dest = p
