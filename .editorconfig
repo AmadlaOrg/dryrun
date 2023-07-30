@@ -20,10 +20,11 @@ indent_style = tab
 [*.zep]
 indent_style = tab
 
-[*.{py,rst,ini}]
+[*.{py,rst,md,ini}]
 indent_style = space
 indent_size = 4
 
-[*.yml]
+[*.{yaml,yml}]
 indent_style = space
 indent_size = 2
+insert_final_newline = false
