@@ -8,6 +8,7 @@ Dockefile   eol=lf
 *.md        eol=lf
 *.mk        eol=lf
 Makefile    eol=lf
+*.yaml      eol=lf
 *.yml       eol=lf
 *.cfg       eol=lf
 *.j2        eol=lf
