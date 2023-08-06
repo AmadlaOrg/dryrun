@@ -11,16 +11,17 @@ RUN apt-get update && \
         curl \
         wget \
         tree \
+        cron \
         openssh-server
 
 RUN pip3 install --upgrade pip && \
     pip3 install poetry
 
-RUN echo 'root:root' | chpasswd && \
-    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
-    sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
+#RUN echo 'root:root' | chpasswd && \
+#    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+#    sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
 
-RUN echo "alias ll='ls -l'" >> ~/.bashrc && \
-    echo "alias la='ls -la'" >> ~/.bashrc
+#RUN echo "alias ll='ls -l'" >> ~/.bashrc && \
+#    echo "alias la='ls -la'" >> ~/.bashrc
 
-CMD service ssh start
+#CMD service ssh start
