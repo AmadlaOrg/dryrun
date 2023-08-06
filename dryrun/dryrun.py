@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
 import shutil
 import re
@@ -134,7 +137,7 @@ def run(name, time, reboot, strict) -> None:
     strict = strict or config.get('strict')
 
     new_dir = os.path.join(dryrun_dir, 'new')
-    old_dir = os.path.join(dryrun_dir, 'old')
+    #old_dir = os.path.join(dryrun_dir, 'old')
 
     paths = config.get('paths', [])
 
@@ -147,7 +150,7 @@ def run(name, time, reboot, strict) -> None:
 
     # Create cron job
     cron = CronTab(user='root')
-    command = f'python3 {os.path.realpath(__file__)} cli revert --name {name}'
+    command = f'{os.path.realpath(__file__)} cli revert --name {name}'
     job = cron.new(command=command)
     job.setall(f'*/{time} * * * *')
     job.set_comment(name)  # Add this line
@@ -191,7 +194,7 @@ def revert(name) -> None:
         return
 
     # Load config
-    with open(config_file, 'r') as f:
+    with open(config_file, 'br') as f:
         config = tomllib.load(f)
 
     old_dir = os.path.join(dryrun_dir, 'old')
